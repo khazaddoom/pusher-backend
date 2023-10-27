@@ -12,7 +12,6 @@ const nextConfig = {
     ]
   },
   experimental: {
-    appDir: true,
     serverComponentsExternalPackages: ["mongoose"],
   },
   webpack(config) {

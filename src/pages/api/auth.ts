@@ -17,15 +17,9 @@ export default function handler(
 ) {
 
   const socketId = req.body.socket_id;
+  var channelName = req.body.channel_name;
+  var auth = pusher.authenticate(socketId, channelName);
+  // const authResponse = pusher.authenticateUser(socketId, user);
 
-  // Replace this with code to retrieve the actual user id and info
-  const user = {
-    id: "101",
-    user_info: {
-      name: "John Smith",
-    }
-  };
-  const authResponse = pusher.authenticateUser(socketId, user);
-
-  res.status(200).json({ ...authResponse })
+  res.status(200).json({ ...auth })
 }

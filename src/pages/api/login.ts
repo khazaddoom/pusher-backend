@@ -9,10 +9,12 @@ export default async function handler(
       await connectToDataBase();
       res.status(200).json("All OK!")
     } catch (error: any) {
+      console.log(error)
       res.status(400).json({
         trace: {
           ...error
         }
       })
     }
+    console.log("End!")
   }

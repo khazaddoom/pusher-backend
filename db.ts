@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 // track the connection
 let isConnected = false;
 export const connectToDataBase = async () => {
@@ -8,11 +8,12 @@ export const connectToDataBase = async () => {
     return;
   }
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    const URI = process.env.MONGODB_URI || ""
+    await mongoose.connect(URI, {
       dbName: "platform-games",
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    });
+    } as ConnectOptions);
     isConnected = true;
   } catch (error) {
     console.log(error);

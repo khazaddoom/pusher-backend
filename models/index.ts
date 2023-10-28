@@ -1,14 +1,18 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose, { Model } from "mongoose";
 
 interface IUsers extends Document {
-    name: string;
+    fullname: string;
+    email: string;
+    password: string;
+    accessToken: string;
 }
 
-const UsersSchema = new mongoose.Schema<IUsers>({
-    name: { type: String, required: true}
-})
-
-const Users = mongoose.model<IUsers>("users", UsersSchema)
+const Users = mongoose.model("users")  || mongoose.model<IUsers>("users", new mongoose.Schema<IUsers>({
+    fullname: { type: String, required: true},
+    email: { type: String, required: true},
+    password: { type: String, required: true},
+    accessToken: { type: String}
+}))
 
 export {
     Users

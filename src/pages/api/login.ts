@@ -9,9 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.status(400).json({message: "Method Not supported!", data: {}})
       break;
     case "POST":
-      await connectToDataBase()
-      const users = await Users.find({})
-      res.status(200).json({message: "Success", data: [...users]})
+      res.status(200).json({message: "Success", data: {}})
       break;
   }
 }

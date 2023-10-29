@@ -16,7 +16,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/db": ["./db"],
-      "@/models": ["./models"]
+      "@/models/*": ["./models/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

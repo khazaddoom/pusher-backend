@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import "@/db";
-import UsersModel from "../../../models/user.model";
+import UsersModel from "@/models/user.model";
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -14,7 +14,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // await connectToDataBase()
       const existingUser = await UsersModel.findOne({
         email
-      }).exec()
+      })
+      .select("-__v")
+      .exec()
       if(existingUser) {
         if(password === existingUser.password) {
           const accessToken = "sometoken"

@@ -15,12 +15,11 @@ const connectToDataBase = async () => {
       useUnifiedTopology: true,
     } as ConnectOptions);
     isConnected = true;
+    console.log("Connected!")
   } catch (error) {
     console.log(error);
   }
 };
-
-export {
-  mongoose,
-  connectToDataBase
-}
+(async () => {
+  await connectToDataBase()
+})()

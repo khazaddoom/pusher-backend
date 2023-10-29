@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { connectToDataBase } from "@/db";
-import { Users } from "@/models";
+import "@/db";
+import Users from "../../../models/user.model";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {method} = req;
@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       case "POST":
         const {email, password, fullname} = req.body;
-        await connectToDataBase()
+        // await connectToDataBase()
         const existingUser = await Users.findOne({
           email
         }).exec()

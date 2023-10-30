@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import "@/db";
 import UsersModel from "@/models/user.model";
 import RoomsModel from "@/models/room.model";
+import { verifyToken } from "../../../utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {method} = req;
@@ -11,11 +12,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       case "POST":
         const {accesstoken} = req.headers;
-        const {_id, roomId, score} = req.body;
+        const {roomId, score} = req.body;
+
+        const verifyAuthToken = verifyToken(process.env.AUTH_SECRET as string)
+        const {_id, email} = await verifyAuthToken(accesstoken as string)
 
         const existingUser = await UsersModel.findOne({
-          _id,
-          accessToken: accesstoken
+          _id, email
         })
         .select('-password -__v')
         .exec()
@@ -44,13 +47,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 existingRoom.winnerUserId = existingRoom.userId
               }
               if(existingRoom.otherUserScore > existingRoom.userScore) {
-                existingRoom.winnerUserId = existingRoom.otherUserScore
+                existingRoom.winnerUserId = existingRoom.otherUserId
               }
               if(existingRoom.otherUserScore == existingRoom.userScore) {
                 existingRoom.winnerUserId = -1
               }
               existingRoom.status = 3
-              existingRoom.complted = true
+              existingRoom.completed = true
             }
             await existingRoom.save()
             res.status(200).json({message: "Success", data: {...existingRoom._doc}})

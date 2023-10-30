@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import "@/db"
 import UsersModel from "@/models/user.model";
 import RoomsModel from "@/models/room.model";
+import { verifyToken } from "../../../utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {method} = req;
@@ -11,10 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       case "POST":
         const {accesstoken} = req.headers;
-        const {_id, gameType} = req.body;
+        const {gameType} = req.body;
+        const verifyAuthToken = verifyToken(process.env.AUTH_SECRET as string)
+        const {_id, email} = await verifyAuthToken(accesstoken as string)
         const existingUser = await UsersModel.findOne({
-          _id,
-          accessToken: accesstoken
+          _id, email
         })
         .select('-password -__v')
         .exec()

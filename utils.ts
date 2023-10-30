@@ -22,7 +22,7 @@ export const verifyToken = (secret: string) => {
         return new Promise<AuthData>((res, rej) => {
             verify(token, secret, function(err, decoded) {
                 if(err) rej(err)
-                res(decoded)
+                res(decoded as AuthData)
             })
         })
     }

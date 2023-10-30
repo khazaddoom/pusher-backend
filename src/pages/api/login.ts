@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .exec()
       if(existingUser) {
         if(password === existingUser.password) {
-          const generateAuthToken = generateToken(process.env.AUTH_SECRET)
+          const generateAuthToken = generateToken(process.env.AUTH_SECRET as string)
           const accessToken = await generateAuthToken({
             _id: existingUser._doc._id,
             email: existingUser._doc.email

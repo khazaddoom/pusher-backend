@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       case "POST":
         const {accesstoken} = req.headers;
-        const {roomId, score} = req.body;
+        const {roomId} = req.body;
 
         const verifyAuthToken = verifyToken(process.env.AUTH_SECRET as string)
         const {_id, email} = await verifyAuthToken(accesstoken as string)
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if(existingUser) {
           const existingRoom = await RoomsModel.findOne({
             status: {
-              $ne: 3
+              $eq: 3
             },
             _id: roomId,
             $or: [{
@@ -36,26 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }).select("-__v")
          
           if(existingRoom) {
-            if(existingRoom._doc.userId == _id && !existingRoom._doc.userScore) {
-              existingRoom.userScore = score
-            }
-            if(existingRoom._doc.otherUserId == _id && !existingRoom._doc.otherUserScore) {
-              existingRoom.otherUserScore = score
-            }
-            if(existingRoom.userScore && existingRoom.otherUserScore) {
-              if(existingRoom.userScore > existingRoom.otherUserScore) {
-                existingRoom.winnerUserId = existingRoom.userId
-              }
-              if(existingRoom.otherUserScore > existingRoom.userScore) {
-                existingRoom.winnerUserId = existingRoom.otherUserId
-              }
-              if(existingRoom.otherUserScore == existingRoom.userScore) {
-                existingRoom.winnerUserId = -1
-              }
-              existingRoom.status = 3
-              existingRoom.completed = true
-            }
-            await existingRoom.save()
             let roomDetails = {...existingRoom._doc}
             if(roomDetails.userId != _id) {
               roomDetails = {

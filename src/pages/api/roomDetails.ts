@@ -24,9 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .exec()
         if(existingUser) {
           const existingRoom = await RoomsModel.findOne({
-            status: {
-              $eq: 3
-            },
             _id: roomId,
             $or: [{
               userId: _id

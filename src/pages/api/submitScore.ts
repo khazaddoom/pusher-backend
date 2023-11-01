@@ -47,17 +47,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           if(existingRoom) {
             if(existingRoom._doc.userId == _id && !existingRoom._doc.userScore) {
               existingRoom.userScore = score
-              pusher.trigger(`channel-${existingRoom._doc._id}`, "submit-score", {
-                by: existingRoom._doc.userId,
-                score: score
-              })
+              try {
+                pusher.trigger(`channel-${existingRoom._doc._id}`, "submit-score", {
+                  by: existingRoom._doc.userId,
+                  score: score
+                })
+              } catch (error) {
+                console.log(error)
+              }
             }
             if(existingRoom._doc.otherUserId == _id && !existingRoom._doc.otherUserScore) {
               existingRoom.otherUserScore = score
-              pusher.trigger(`channel-${existingRoom._doc._id}`, "submit-score", {
-                by: existingRoom._doc.otherUserId,
-                score: score
-              })
+              try {
+                pusher.trigger(`channel-${existingRoom._doc._id}`, "submit-score", {
+                  by: existingRoom._doc.otherUserId,
+                  score: score
+                })
+              } catch (error) {
+                console.log(error)
+              }
             }
             let winnerDetails = {}
             if(existingRoom.userScore && existingRoom.otherUserScore) {
@@ -85,9 +93,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               }
               existingRoom.status = 3
               existingRoom.completed = true
-              pusher.trigger(`channel-${existingRoom._doc._id}`, "game-complete", {
-                ...winnerDetails
-              })
+              try {
+                pusher.trigger(`channel-${existingRoom._doc._id}`, "game-complete", {
+                  ...winnerDetails
+                })
+              } catch (error) {
+                console.log(error)
+              }
             }
             await existingRoom.save()
             let roomDetails = {...existingRoom._doc}

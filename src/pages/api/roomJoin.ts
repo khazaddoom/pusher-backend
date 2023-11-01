@@ -67,7 +67,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               if(!vacantRoom._doc.otherUserId)
                 vacantRoom.otherUserId = existingUser._doc._id
               await vacantRoom.save()
-              pusher.trigger(`channel-${vacantRoom._doc._id}`, "game-start", {})
+              try {
+                pusher.trigger(`channel-${vacantRoom._doc._id}`, "game-start", {})
+              } catch (error) {
+                console.log(error)
+              }
               res.status(200).json({...vacantRoom._doc})
             } else {
               const newRoom = await RoomsModel.create({

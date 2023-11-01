@@ -4,6 +4,16 @@ import UsersModel from "@/models/user.model";
 import RoomsModel from "@/models/room.model";
 import { verifyToken } from "../../../utils";
 
+import Pusher from "pusher";
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APP_ID as string,
+  key: process.env.PUSHER_APP_KEY as string,
+  secret: process.env.PUSHER_APP_SECRET as string,  
+  cluster: "ap2",
+  useTLS: true,
+});
+
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {method} = req;
     switch (method) {
@@ -57,6 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               if(!vacantRoom._doc.otherUserId)
                 vacantRoom.otherUserId = existingUser._doc._id
               await vacantRoom.save()
+              pusher.trigger(`channel-${vacantRoom._doc._id}`, "game-start", {})
               res.status(200).json({...vacantRoom._doc})
             } else {
               const newRoom = await RoomsModel.create({

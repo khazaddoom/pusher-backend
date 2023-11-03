@@ -7,7 +7,7 @@ const token = process.env.token;
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {method} = req;
     switch (method) {
-      case "GET":
+      case "POST":
         const octokit = new Octokit({ auth: `token ${token}` });
 
         // 1. Create a Blob
@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
         res.status(200).json({message: "Success", data: {}})
         break;
-      case "POST":
+      case "GET":
         res.status(400).json({message: "No Such method!", data: {}})
         break;
     }
